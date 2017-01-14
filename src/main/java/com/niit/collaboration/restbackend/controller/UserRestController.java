@@ -25,6 +25,11 @@ public class UserRestController {
 	@Autowired
 	UserDao userDao;
 	
+	/**
+	 * This method returns the list of registered users.
+	 * 
+	 * @return users the list of registered users.
+	 */
 	@GetMapping(value = "/user/")
 	public ResponseEntity<List<User>> getAllUsers() {
 		System.out.println("Inside UserController::getAllUsers()....");
