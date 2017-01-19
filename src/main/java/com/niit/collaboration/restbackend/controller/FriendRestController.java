@@ -24,9 +24,6 @@ public class FriendRestController {
 	@Autowired
 	FriendDao friendDao;
 	
-	/*@Autowired
-	HttpSession session;*/
-	
 	@GetMapping(value = "/user/sendRequest/{toId}")
 	public ResponseEntity<Friend> sendFriendRequest(@PathVariable("toId") long friendId, HttpSession session) {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
