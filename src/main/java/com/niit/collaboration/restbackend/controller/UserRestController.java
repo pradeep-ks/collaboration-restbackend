@@ -40,6 +40,17 @@ public class UserRestController {
 		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
 	}
 	
+	@GetMapping(value = "/user/others/")
+	public ResponseEntity<List<User>> getAllUsersExceptLoggedIn(HttpSession session) {
+		System.out.println("Inside UserController::getAllUsersExceptLoggedIn()....");
+		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
+		List<User> users = userDao.listUsersExceptLoggedIn(loggedInUserId);
+		if (users.isEmpty()) {
+			return new ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);
+		}
+		return new ResponseEntity<List<User>>(users, HttpStatus.OK);
+	}
+	
 	@GetMapping(value = "/user/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<User> getUser(@PathVariable("id") long id) {
 		System.out.println("Inside UserController::getUser()....");
@@ -102,7 +113,7 @@ public class UserRestController {
 		return new ResponseEntity<User>(HttpStatus.NO_CONTENT);
 	}
 	
-	@PostMapping(value = "/user/auth")
+	@PostMapping(value = "/user/auth/")
 	public ResponseEntity<User> authenticate(@RequestBody User user, HttpSession session) {
 		boolean result = userDao.authenticate(user.getUsername(), user.getPassword());
 		if (result) {
