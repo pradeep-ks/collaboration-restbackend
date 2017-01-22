@@ -38,14 +38,14 @@ public class FriendRestController {
 		return new ResponseEntity<Friend>(request, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/user/myFriendRequests/")
+	@GetMapping(value = "/user/friends/")
 	public ResponseEntity<List<Friend>> getMyFriendRequests(HttpSession session) {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
 		List<Friend> myFriendRequests = friendDao.listMyFriends(loggedInUserId);
 		return new ResponseEntity<List<Friend>>(myFriendRequests, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/user/myNewFriendRequests/")
+	@GetMapping(value = "/user/newFriendRequests/")
 	public ResponseEntity<List<Friend>> getMyNewFriendRequests(HttpSession session) {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
 		List<Friend> myFriendRequests = friendDao.listNewFriendRequests(loggedInUserId);
@@ -56,8 +56,11 @@ public class FriendRestController {
 	public ResponseEntity<Friend> acceptFriendRequest(@PathVariable("id") long friendId, HttpSession session) {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
 		Friend request = friendDao.getFriend(loggedInUserId, friendId);
+		Friend request2 = friendDao.getFriend(friendId, loggedInUserId);
 		request.setStatus("ACCEPTED");
+		request2.setStatus("ACCEPTED");
 		friendDao.update(request);
+		friendDao.update(request2);
 		return new ResponseEntity<Friend>(request, HttpStatus.OK);
 	}
 	
@@ -65,8 +68,11 @@ public class FriendRestController {
 	public ResponseEntity<Friend> rejectFriendRequest(@PathVariable("id") long friendId, HttpSession session) {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
 		Friend request = friendDao.getFriend(loggedInUserId, friendId);
+		Friend request2 = friendDao.getFriend(friendId, loggedInUserId);
 		request.setStatus("REJECTED");
+		request2.setStatus("REJECTED");
 		friendDao.update(request);
+		friendDao.update(request2);
 		return new ResponseEntity<Friend>(request, HttpStatus.OK);
 	}
 }

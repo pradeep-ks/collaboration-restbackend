@@ -1,5 +1,6 @@
 package com.niit.collaboration.restbackend.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -48,6 +49,9 @@ public class JobRestController {
 	
 	@PostMapping(value = "/job/")
 	public ResponseEntity<Job> addJob(@RequestBody Job job) {
+		job.setDateTime(new Date());
+		job.setStatus("NEW");
+
 		jobDao.add(job);
 		return new ResponseEntity<Job>(job, HttpStatus.CREATED);
 	}
