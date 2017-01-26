@@ -70,6 +70,8 @@ public class BlogRestController {
 		if (blog == null) {
 			return new ResponseEntity<Blog>(HttpStatus.NOT_FOUND);
 		}
+		blogDao.remove(blog);
+		
 		return new ResponseEntity<Blog>(HttpStatus.OK);
 	}
 }

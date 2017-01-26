@@ -69,7 +69,8 @@ public class EventRestController {
 		if (evt == null) {
 			return new ResponseEntity<Event>(HttpStatus.NOT_FOUND);
 		}
-		eventDao.remove(evt);
+		evt.setStatus("DONE");
+		eventDao.update(evt);
 		return new ResponseEntity<Event>(HttpStatus.OK);
 	}
 }

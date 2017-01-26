@@ -80,12 +80,22 @@ public class JobRestController {
 		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
 		AppliedJob applyJob = new AppliedJob();
 		applyJob.setJob(jobDao.getJobById(jobId));
-		applyJob.setStatus("NEW");
+		applyJob.setStatus("APPLIED");
 		applyJob.setDateApplied(new java.util.Date());
 		applyJob.setUser(userDao.getUserById(loggedInUserId));
 		
 		jobDao.saveAppliedJob(applyJob);
 		
 		return new ResponseEntity<Job>(HttpStatus.CREATED);
+	}
+	
+	@GetMapping(value = "/job/applied/")
+	public ResponseEntity<List<AppliedJob>> getJobsApplied(HttpSession session) {
+		long loggedInUserId = (Long) session.getAttribute("loggedInUserId");
+		List<AppliedJob> jobsApplied = jobDao.listAppliedJobs(loggedInUserId);
+		if (jobsApplied.isEmpty()) {
+			return new ResponseEntity<List<AppliedJob>>(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<AppliedJob>>(jobsApplied, HttpStatus.OK);
 	}
 }
