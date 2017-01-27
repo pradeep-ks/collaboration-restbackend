@@ -121,6 +121,9 @@ public class UserRestController {
 			session.setAttribute("loggedInUser", u);
 			session.setAttribute("loggedInUserId", u.getUserId());
 			
+			u.setOnline(true);
+			userDao.udpate(u);
+			
 			return new ResponseEntity<User>(u, HttpStatus.OK);
 		}
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
