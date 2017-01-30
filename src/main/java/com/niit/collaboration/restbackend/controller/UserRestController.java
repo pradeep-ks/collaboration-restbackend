@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.niit.collaboration.backend.dao.FriendDao;
 import com.niit.collaboration.backend.dao.UserDao;
 import com.niit.collaboration.backend.model.User;
 
@@ -24,6 +25,9 @@ public class UserRestController {
 
 	@Autowired
 	UserDao userDao;
+	
+	@Autowired
+	FriendDao friendDao;
 	
 	/**
 	 * This method returns the list of registered users.
@@ -118,14 +122,25 @@ public class UserRestController {
 		boolean result = userDao.authenticate(user.getUsername(), user.getPassword());
 		if (result) {
 			User u = userDao.getUserByUsername(user.getUsername());
+			friendDao.setOnline(u.getUserId());
+			userDao.setOnline(u.getUserId());
+			
 			session.setAttribute("loggedInUser", u);
 			session.setAttribute("loggedInUserId", u.getUserId());
-			
-			u.setOnline(true);
-			userDao.udpate(u);
 			
 			return new ResponseEntity<User>(u, HttpStatus.OK);
 		}
 		return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+	}
+	
+	@PutMapping(value = "/user/logout/")
+	public ResponseEntity<User> logout(HttpSession session) {
+		long userId = (Long) session.getAttribute("loggedInUserId");
+		
+		userDao.setOffline(userId);
+		friendDao.setOffline(userId);
+		session.invalidate();
+		
+		return new ResponseEntity<User>(HttpStatus.OK);
 	}
 }
