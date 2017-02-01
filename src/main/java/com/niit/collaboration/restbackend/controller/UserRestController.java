@@ -143,4 +143,16 @@ public class UserRestController {
 		
 		return new ResponseEntity<User>(HttpStatus.OK);
 	}
+	
+	@PutMapping(value = "/user/makeAdmin/{userId}")
+	public ResponseEntity<User> makeAdmin(@PathVariable("userId") long userId) {
+		User user = userDao.getUserById(userId);
+		if (user == null) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		
+		user.setRole("ADMIN");
+		userDao.udpate(user);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
 }
