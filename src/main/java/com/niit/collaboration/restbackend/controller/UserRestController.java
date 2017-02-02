@@ -34,7 +34,7 @@ public class UserRestController {
 	 * 
 	 * @return users the list of registered users.
 	 */
-	@GetMapping(value = "/user/")
+	@GetMapping(value = "/user/all/")
 	public ResponseEntity<List<User>> getAllUsers() {
 		System.out.println("Inside UserController::getAllUsers()....");
 		List<User> users = userDao.list();
@@ -178,6 +178,30 @@ public class UserRestController {
 		}
 		
 		user.setRole("ADMIN");
+		userDao.udpate(user);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/user/enable/{userId}")
+	public ResponseEntity<User> enableUser(@PathVariable("userId") long userId) {
+		User user = userDao.getUserById(userId);
+		if (user == null) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		
+		user.setActive(true);
+		userDao.udpate(user);
+		return new ResponseEntity<User>(user, HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "/user/disable/{userId}")
+	public ResponseEntity<User> disableUser(@PathVariable("userId") long userId) {
+		User user = userDao.getUserById(userId);
+		if (user == null) {
+			return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+		}
+		
+		user.setActive(false);
 		userDao.udpate(user);
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
